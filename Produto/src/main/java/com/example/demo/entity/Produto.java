@@ -4,47 +4,50 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "tb_produto")
 public class Produto {
- @Id
- @GeneratedValue(strategy = GenerationType.IDENTITY)
- public Long id;
- public String nome;
- public int valor;
- 
-public Produto(Long id, String nome, int valor) {
-	super();
-	this.id = id;
-	this.nome = nome;
-	this.valor = valor;
-}
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	public Long id;
+	public String nome;
+	public Double valor;
 
-public Produto() {
-	super();
-}
+	public Produto(Long id, String nome, Double valor) {
+		super();
+		this.id = id;
+		this.nome = nome;
+		this.valor = valor;
+	}
 
-public Long getId() {
-	return id;
-}
+	public Produto() {
+		super();
+	}
 
-public void setId(Long id) {
-	this.id = id;
-}
+	public Long getId() {
+		return id;
+	}
 
-public String getNome() {
-	return nome;
-}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-public void setNome(String nome) {
-	this.nome = nome;
-}
+	public String getNome() {
+		return nome;
+	}
 
-public int getValor() {
-	return valor;
-}
+	public void setNome(String nome) {
+		this.nome = nome;
+	}
 
-public void setValor(int valor) {
-	this.valor = valor;
- }
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}
 }
