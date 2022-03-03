@@ -8,28 +8,34 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.Produto;
 import com.example.demo.repository.ProdutoRepository;
 
+
 @Service
 public class ProdutoService {
-
-	@Autowired
-	ProdutoRepository produtoRepository;
-
-	public Produto save(Produto produto) {
-
-		return produtoRepository.save(produto);
-	}
-
-	public List<Produto> findAll() {
-		return produtoRepository.findAll();
-	}
-
-	public Produto getById(Long id) {
-
-		return produtoRepository.getById(id);
-	}
-
-	public void deleteById(Long id) {
-
-		produtoRepository.deleteById(id);
-	}
+	
+	 @Autowired
+	 ProdutoRepository produtorepository;
+	 
+	 public Produto save(Produto produto) {
+	 
+	 return produtorepository.save(produto);
+	 }
+	 
+	 public List<Produto> findAll(){
+		 return produtorepository.findAll();
+	 }
+	 public Produto findById(Long id) {
+			
+			return produtorepository.findById(id).get();
+		}
+	 public void DeleteById(Long id) {
+		 
+		 produtorepository.deleteById(id);
+	 }
+	 public Produto updateById(Long id, Produto produto) {
+		 Produto updateproduto = findById(id);
+		 updateproduto.setNome(produto.getNome());
+		 updateproduto.setValor(produto.getValor());
+		 
+		 return produtorepository.save(updateproduto);
+	 }
 }
