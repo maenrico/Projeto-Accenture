@@ -24,6 +24,23 @@ public class ConsumoApplication {
                 .build();
     }
 
+    @Bean
+    public WebClient webClientUsuarios(WebClient.Builder builder){
+        return builder.baseUrl("http://localhost:8083")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    public WebClient webClientPagamentos(WebClient.Builder builder){
+        return builder.baseUrl("http://localhost:8084")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+
+
+
 
     public static void main(String[] args) {
         SpringApplication.run(ConsumoApplication.class, args);

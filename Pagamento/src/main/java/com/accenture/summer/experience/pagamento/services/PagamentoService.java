@@ -1,6 +1,5 @@
 package com.accenture.summer.experience.pagamento.services;
 
-import com.accenture.summer.experience.pagamento.models.StatusWrapper;
 import com.accenture.summer.experience.pagamento.models.Pagamento;
 import com.accenture.summer.experience.pagamento.repository.PagamentoRepository;
 
@@ -27,22 +26,5 @@ public class PagamentoService {
         return pagamentoRepository.save(pagamento);
     }
 
-    public Pagamento updateStatus(Long id, StatusWrapper status) {
-        Optional<Pagamento> pagamento = pagamentoRepository.findById(id);
-
-        if(pagamento.isPresent()){
-            pagamento.get().setStatus(status.getStatus());
-            pagamentoRepository.save(pagamento.get());
-            return pagamento.get();
-        } else {
-            return null;
-        }
-    }
-
-    public Pagamento delete(Long id) {
-        Optional<Pagamento> pagamento = pagamentoRepository.findById(id);
-        pagamentoRepository.delete(pagamento.get());
-        return (pagamento.isPresent())? pagamento.get() : null;
-    }
 
 }

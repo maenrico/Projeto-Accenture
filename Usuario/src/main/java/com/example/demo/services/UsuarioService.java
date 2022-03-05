@@ -36,7 +36,7 @@ public class UsuarioService {
 	public Usuario Update(Long id, Usuario user) {
 		
 		Usuario updateUser = findById(id);
-		updateUser.setName(user.getName());
+		updateUser.setNome(user.getNome());
 		updateUser.setEmail(user.getEmail());
 		updateUser.setContato(user.getContato());
 		return usuarioRepository.save(updateUser);

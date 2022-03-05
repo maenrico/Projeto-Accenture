@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 public class Pedido implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String hora;
@@ -55,7 +55,7 @@ public class Pedido implements Serializable {
         return this.status;
     }
 
-    public void setStatus(StatusPedido status) {
-        this.status = status;
+    public void setStatus(String status) {
+        this.status = StatusPedido.valueOf(status);
     }
 }

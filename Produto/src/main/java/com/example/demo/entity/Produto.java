@@ -1,20 +1,17 @@
 package com.example.demo.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "tb_produto")
 public class Produto {
  @Id
  @GeneratedValue(strategy = GenerationType.IDENTITY)
- public Long id;
- public String nomeProduto;
- public int valor;
+ private Long id;
+ private String nomeProduto;
+ private double valor;
  
 public Produto(Long id, String nome, int valor) {
-	super();
 	this.id = id;
 	this.nomeProduto = nome;
 	this.valor = valor;
@@ -40,11 +37,11 @@ public void setNomeProduto(String nome) {
 	this.nomeProduto = nome;
 }
 
-public int getValor() {
-	return valor;
-}
+	public double getValor() {
+		return valor;
+	}
 
-public void setValor(int valor) {
-	this.valor = valor;
- }
+	public void setValor(double valor) {
+		this.valor = valor;
+	}
 }

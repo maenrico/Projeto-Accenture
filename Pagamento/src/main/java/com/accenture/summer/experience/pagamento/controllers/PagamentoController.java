@@ -3,7 +3,6 @@ package com.accenture.summer.experience.pagamento.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import com.accenture.summer.experience.pagamento.models.StatusWrapper;
 import com.accenture.summer.experience.pagamento.models.Pagamento;
 import com.accenture.summer.experience.pagamento.services.PagamentoService;
 
@@ -26,7 +25,7 @@ public class PagamentoController {
     @Autowired
     private PagamentoService pagamentoService;
 
-    @GetMapping("/all")
+    @GetMapping()
     @ResponseBody
     public List<Pagamento> getAll() {
         return pagamentoService.findAll();
@@ -38,22 +37,12 @@ public class PagamentoController {
         return pagamentoService.findById(id);
     }
 
-    @PostMapping("/create")
+    @PostMapping()
     @ResponseBody
     public Pagamento create(@RequestBody Pagamento pagamento) {
         return pagamentoService.create(pagamento);
     }
     
-    @PutMapping("/update/{id}/status")
-    @ResponseBody
-    public Pagamento updateStatus(@PathVariable Long id, @RequestBody StatusWrapper status) {
-        return pagamentoService.updateStatus(id, status);
-    }
 
-    @DeleteMapping("/delete/{id}")
-    @ResponseBody
-    public Pagamento delete(@PathVariable Long id) {
-        return pagamentoService.delete(id);
-    }
     
 }

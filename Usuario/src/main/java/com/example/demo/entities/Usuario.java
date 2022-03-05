@@ -37,10 +37,10 @@ public Long getId() {
 public void setId(Long id) {
 	this.id = id;
 }
-public String getName() {
+public String getNome() {
 	return nome;
 }
-public void setName(String nome) {
+public void setNome(String nome) {
 	this.nome = nome;
 }
 public String getEmail() {

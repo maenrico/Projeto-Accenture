@@ -2,74 +2,30 @@ package com.accenture.summer.experience.pagamento.models;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-/*
-* id
-* order_id
-* status
-*/
+import javax.persistence.*;
 
 @Entity
-@Table(name = "pagamento")
+@Table(name = "tb_pagamento")
 public class Pagamento implements Serializable {
-    
-    public static final Integer STATUS_PENDING = 1;
-    public static final Integer STATUS_RECEIVED = 2;
-    public static final Integer STATUS_CANCELED = 3;
-    
-    public Pagamento() {
-
-    }
-
-    public Pagamento(Long pedidoId, Integer status) {
-        this.pedidoId = pedidoId;
-        this.status = status;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Enumerated(EnumType.STRING)
+    private Status statusPagamento;
 
-    @Column
-    private Long pedidoId;
+    public Pagamento() {}
 
-    @Column
-    private Integer status;
-
-    public Long getId() {
-        return this.id;
+    public Pagamento(Long id, Status status) {
+        this.id = id;
+        this.statusPagamento = status;
     }
 
-    public Long getPedidoId() {
-        return this.pedidoId;
+    public Status getStatusPagamento() {
+        return statusPagamento;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setStatusPagamento(String status) {
+        this.statusPagamento = Status.valueOf(status);
     }
-    
-    public Integer getStatus() {
-        return this.status;
-    }
-
-    // @Override
-    // public String toString() {
-    //     return "";
-    // }
-
-    // @Override
-    // public boolean equals() {
-    //     return false;
-    // }
-
-    // @Override
-    // public int hashCode() {
-    //     return 0;
-    // }
 }
