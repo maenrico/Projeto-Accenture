@@ -17,7 +17,6 @@ public class PagamentoService {
     public List<Pagamento> findAll(){
         return this.pagamentoRepository.findAll();
     }
-
     public Optional<Pagamento> findById(Long id) {
         return this.pagamentoRepository.findById(id);
     }
@@ -25,6 +24,9 @@ public class PagamentoService {
     public Pagamento create(Pagamento pagamento) {
         return pagamentoRepository.save(pagamento);
     }
-
-
+    
+    public void deleteById(Long id) {
+    	
+    	pagamentoRepository.deleteById(id);
+    }
 }
