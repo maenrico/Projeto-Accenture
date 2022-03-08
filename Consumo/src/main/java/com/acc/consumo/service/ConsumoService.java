@@ -2,7 +2,6 @@ package com.acc.consumo.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,10 @@ import com.acc.consumo.model.Consumo;
 import com.acc.consumo.model.Pedido;
 import com.acc.consumo.model.PedidoGetway;
 import com.acc.consumo.model.ProdutoGetway;
+import com.acc.consumo.model.Usuario;
 import com.acc.consumo.repository.PedidoGetwayRepository;
 import com.acc.consumo.repository.ProdutoGetwayRepository;
+import com.acc.consumo.repository.UsuarioRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,6 +41,9 @@ public class ConsumoService {
     
     @Autowired
     private ProdutoGetwayRepository produtoRepository;
+    
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     
     public Consumo obterConsumo(Long idPedido){
 
@@ -85,6 +89,17 @@ public class ConsumoService {
         return pedido;
     }
     
+    public Usuario buscarUsuario(Long id) {
+    	
+    	Mono<Usuario> monoUsuario = webClientUsuarios
+    			.method(HttpMethod.GET)
+                .uri("/usuario/{id}", id )
+                .retrieve()
+                .bodyToMono(Usuario.class);
+    	
+    	return monoUsuario.block();
+    }
+    
     public Mono<Pedido> newPedido(Pedido pedido) {
         
     	Mono<Pedido> monoPedido = webClientPedidos
@@ -105,9 +120,7 @@ public class ConsumoService {
                 .retrieve()
                 .bodyToMono(Pedido.class);
     	
-    	Pedido pedido = monoPedido.block();
-    	
-    	return pedido;
+    	return monoPedido.block();
     }
     
     public ProdutoGetway buscarProduto(Long id) {
@@ -118,9 +131,7 @@ public class ConsumoService {
                 .retrieve()
                 .bodyToMono(ProdutoGetway.class);
     	
-    	ProdutoGetway produto = monoProduto.block();
-    	
-    	return produto;
+    	return monoProduto.block();
     }
     
     public List<ProdutoGetway> listarProdutos() {
@@ -131,9 +142,7 @@ public class ConsumoService {
     			.retrieve()
     			.bodyToFlux(ProdutoGetway.class);
     	
-    	List<ProdutoGetway> produtos = fluxProduto.toStream().map(x -> x).collect(Collectors.toList());
-    	
-    	return produtos;
+    	return fluxProduto.toStream().map(x -> x).collect(Collectors.toList());
     }
     
     public PedidoGetway fazerPedido(Long idProduto, Long idPedido) {
@@ -187,6 +196,25 @@ public class ConsumoService {
     	pedido.setProdutos(listaProdutos);
     	
     	return pedidoRepository.save(pedido);
+    }
+  
+    public Usuario atribuiUsuario(Long idPedido, Long idUsuario) {
+    	 
+    	Usuario usuario = buscarUsuario(idUsuario);
+    	PedidoGetway pedido = pedidoRepository.findById(idPedido).get();
     	
+    	List<PedidoGetway> listaPedidos = new ArrayList<>();
+    	listaPedidos.add(pedido);
+    	
+    	Usuario pedidoUsuario = new Usuario();
+    	
+    	pedidoUsuario.setNome(usuario.getNome());
+    	pedidoUsuario.setContato(usuario.getContato());
+    	pedidoUsuario.setEmail(usuario.getEmail());
+    	pedidoUsuario.setPedidos(listaPedidos);
+    	
+    	usuarioRepository.save(pedidoUsuario);
+    	
+    	return pedidoUsuario;
     }
 }

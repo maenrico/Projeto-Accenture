@@ -1,7 +1,5 @@
 package com.acc.consumo.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.acc.consumo.model.Consumo;
 import com.acc.consumo.model.Pedido;
 import com.acc.consumo.model.PedidoGetway;
-import com.acc.consumo.model.ProdutoGetway;
+import com.acc.consumo.model.Usuario;
 import com.acc.consumo.service.ConsumoService;
 
 import reactor.core.publisher.Mono;
@@ -42,24 +40,11 @@ public class ConsumoController {
 
 		return ResponseEntity.status(HttpStatus.OK).body(pedidoProduto);
 	}
-	
-	@GetMapping("/pedido/{id}")
-	public ResponseEntity<Pedido> buscarPedido(@PathVariable Long id) {
-		
-		Pedido pedido = this.consumoService.buscarPedido(id);
-
-		return ResponseEntity.status(HttpStatus.OK).body(pedido);
-	}
 
 	@PostMapping("/pedido")
 	@ResponseStatus(HttpStatus.CREATED)
 	public Mono<Pedido> create(@RequestBody Pedido pedido) {
 		return consumoService.newPedido(pedido);
-	}
-	
-	@GetMapping("/produtos")
-	public List<ProdutoGetway> todosProdutos(){
-		return consumoService.listarProdutos();
 	}
 	
 	@PutMapping("/produto/{idProduto}/pedido/{idPedido}")
@@ -68,9 +53,11 @@ public class ConsumoController {
 		return updatePedido;
 	}
 	
-	@GetMapping("/produto/{id}")
-	public ProdutoGetway todosProdutos(@PathVariable Long id){
-		return consumoService.buscarProduto(id);
+	@GetMapping("/pedido/{idPedido}/usuario/{idUsuario}")
+	public Usuario atrribuiUsuario(@PathVariable Long idPedido, @PathVariable Long idUsuario) {
+		Usuario usuarioPedido = consumoService.atribuiUsuario(idPedido, idUsuario);
+		return usuarioPedido;
+		
 	}
 
 }
