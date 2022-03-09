@@ -8,13 +8,6 @@ public class PaymentApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentApplication.class, args);
-
-		System.out.println("");
-		System.out.println("---------------------------");
-		System.out.println("--- Project Inicialized ---");
-		System.out.println("---------------------------");
-		System.out.println("");
-		
 	}
 
 }

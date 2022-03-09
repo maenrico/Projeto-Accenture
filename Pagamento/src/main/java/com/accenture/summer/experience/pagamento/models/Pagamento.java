@@ -8,9 +8,14 @@ import javax.persistence.*;
 @Table(name = "tb_pagamento")
 public class Pagamento implements Serializable {
 
-    @Id
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Double valorPago;
     @Enumerated(EnumType.STRING)
     private Status statusPagamento;
 
@@ -20,8 +25,28 @@ public class Pagamento implements Serializable {
         this.id = id;
         this.statusPagamento = status;
     }
+    
+    public Long getId() {
+		return id;
+	}
 
-    public Status getStatusPagamento() {
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Double getValorPago() {
+		return valorPago;
+	}
+
+	public void setValorPago(Double valorPago) {
+		this.valorPago = valorPago;
+	}
+
+	public void setStatusPagamento(Status statusPagamento) {
+		this.statusPagamento = statusPagamento;
+	}
+
+	public Status getStatusPagamento() {
         return statusPagamento;
     }
 
