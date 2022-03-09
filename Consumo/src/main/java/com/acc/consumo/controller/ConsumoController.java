@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.acc.consumo.model.Consumo;
+import com.acc.consumo.model.Pagamento;
 import com.acc.consumo.model.Pedido;
 import com.acc.consumo.model.PedidoGetway;
 import com.acc.consumo.model.Usuario;
 import com.acc.consumo.service.ConsumoService;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -24,14 +26,46 @@ public class ConsumoController {
 
 	@Autowired
 	ConsumoService consumoService;
+	
+	@GetMapping("/produto")
+    public ResponseEntity<Flux<Consumo>> obterConsumoProduto (){
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Consumo> obterConsumo(@PathVariable Long id) {
+        Flux<Consumo> consumo = this.consumoService
+                .obterConsumoProduto();
 
-		Consumo consumo = this.consumoService.obterConsumo(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(consumo);
+    }
+	
+    @GetMapping("/usuario")
+    public ResponseEntity<Flux<Consumo>> obterConsumoUsuario (){
 
-		return ResponseEntity.status(HttpStatus.OK).body(consumo);
-	}
+        Flux<Consumo> consumo = this.consumoService
+                .obterConsumoUsuario();
+
+        return ResponseEntity.status(HttpStatus.OK).body(consumo);
+    }
+    
+    @GetMapping("/pedido")
+    public ResponseEntity<Flux<Consumo>> obterConsumoPedido (){
+
+        Flux<Consumo> consumo = this.consumoService
+                .obterConsumoPedido();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(consumo);
+    }
+    
+    @GetMapping("/pagamento")
+    public ResponseEntity<Flux<Consumo>> obterConsumoPagamento (){
+
+        Flux<Consumo> consumo = this.consumoService
+                .obterConsumoPagamento();
+
+        return ResponseEntity.status(HttpStatus.OK).body(consumo);
+    }
 
 	@GetMapping("/produto/{idProduto}/pedido/{idPedido}")
 	public ResponseEntity<PedidoGetway> novoPedido(@PathVariable Long idProduto, @PathVariable Long idPedido) {
@@ -53,11 +87,28 @@ public class ConsumoController {
 		return updatePedido;
 	}
 	
-	@GetMapping("/pedido/{idPedido}/usuario/{idUsuario}")
-	public Usuario atrribuiUsuario(@PathVariable Long idPedido, @PathVariable Long idUsuario) {
+	@PostMapping("/pedido/{idPedido}/usuario/{idUsuario}")
+	public Usuario atribuiUsuario(@PathVariable Long idPedido, @PathVariable Long idUsuario) {
 		Usuario usuarioPedido = consumoService.atribuiUsuario(idPedido, idUsuario);
 		return usuarioPedido;
 		
+	}
+	
+	@PutMapping("/pedido/{idPedido}/usuario/{idUsuario}")
+	public Usuario updatePedidoUsuario(@PathVariable Long idPedido, @PathVariable Long idUsuario) {
+		Usuario usuario = consumoService.updatePedidoUsuario(idPedido, idUsuario);
+		return usuario;
+	}
+	
+	@GetMapping("/usuario/{id}/pedido")
+	public Usuario getUsuarioPeidodById(@PathVariable Long id) {
+		Usuario usuario = consumoService.getUsuarioById(id);
+		return usuario;
+	}
+	
+	@PutMapping("pedido/{idPedido}/pagamento")
+	public Pagamento pagarPedido(@PathVariable Long idPedido, @RequestBody Pagamento pagamento) {
+		return consumoService.realizarPagamento(idPedido, pagamento);
 	}
 
 }

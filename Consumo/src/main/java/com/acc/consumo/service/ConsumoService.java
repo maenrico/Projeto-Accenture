@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.acc.consumo.model.Consumo;
+import com.acc.consumo.model.Pagamento;
 import com.acc.consumo.model.Pedido;
 import com.acc.consumo.model.PedidoGetway;
 import com.acc.consumo.model.ProdutoGetway;
 import com.acc.consumo.model.Usuario;
+import com.acc.consumo.repository.PagamentoRepository;
 import com.acc.consumo.repository.PedidoGetwayRepository;
 import com.acc.consumo.repository.ProdutoGetwayRepository;
 import com.acc.consumo.repository.UsuarioRepository;
@@ -45,48 +47,50 @@ public class ConsumoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
     
-    public Consumo obterConsumo(Long idPedido){
+    @Autowired
+    private PagamentoRepository pagamentoRepository;
+    
+    public Flux<Consumo> obterConsumoProduto(){
 
-        Mono<Consumo> monoProduto = this.webClientProdutos.method(HttpMethod.GET)
-                .uri("/produto/{id}", idPedido )
+        return this.webClientProdutos.get()
+                .uri("/produto")
+                .retrieve() 
+                .bodyToFlux(Consumo.class);
+    }
+    
+    public Flux<Consumo> obterConsumoPedido(){
+
+    	return this.webClientPedidos.get()
+                .uri("/pedido")
                 .retrieve()
-                .bodyToMono(Consumo.class);
-
-
-        Mono<Consumo> monoPedido = this.webClientPedidos
-                .method(HttpMethod.GET)
-                .uri("/pedido/{id}", idPedido)
+                .bodyToFlux(Consumo.class);
+    }
+        
+    public Flux<Consumo> obterConsumoUsuario(){
+            
+    	return webClientUsuarios
+                .get()
+                .uri("/usuario")
                 .retrieve()
-                .bodyToMono(Consumo.class);
-
-
-        Mono<Consumo> monoUsuario = this.webClientUsuarios
-                .method(HttpMethod.GET)
-                .uri("/usuario/{id}", idPedido)
+                .bodyToFlux(Consumo.class);
+    }
+        
+    public Flux<Consumo> obterConsumoPagamento(){
+        
+        return this.webClientPagamentos
+                .get()
+                .uri("/pagamento")
                 .retrieve()
-                .bodyToMono(Consumo.class);
-
-        Mono<Consumo> monoPagamento = this.webClientPagamentos
-                .method(HttpMethod.GET)
-                .uri("/pagamento/{id}", idPedido)
-                .retrieve()
-                .bodyToMono(Consumo.class);
-
-
-
-        Consumo pedido = monoPedido.block();
-        Consumo pagamento = monoPagamento.block();
-        Consumo produto =  monoProduto.block();
-        Consumo usuario = monoUsuario.block();
-
-        pedido.setNomeProduto(produto.getNomeProduto());
-        pedido.setValorTotal(pedido.getValorTotal());
-        pedido.setHora(pedido.getHora());
-        pedido.setNome(usuario.getNome());
-        pedido.setContato(usuario.getContato());
-        pedido.setStatusPagamento(pagamento.getStatusPagamento());
-
-        return pedido;
+                .bodyToFlux(Consumo.class);
+    }
+    
+    public Pagamento novoPagamento() {
+    	
+    	Pagamento pagamento = new Pagamento();
+    	pagamento.setStatusPagamento("PENDENTE");
+    	pagamento.setValorPago(0.0);
+    	
+    	return pagamentoRepository.save(pagamento);
     }
     
     public Usuario buscarUsuario(Long id) {
@@ -154,7 +158,7 @@ public class ConsumoService {
     	List<ProdutoGetway> produtos = listarProdutos();
     	
     	PedidoGetway pedidoProduto = new PedidoGetway();
-    	
+    	  	
     	pedidoProduto.setId(pedido.getId());
     	pedidoProduto.setHora(pedido.getHora());
     	pedidoProduto.setValorTotal(produto.getValor());
@@ -170,7 +174,8 @@ public class ConsumoService {
     	}
     	
     	pedidoProduto.setProdutos(listaProdutos);
-
+    	pedidoProduto.setPagamento(novoPagamento());
+    	
     	return this.pedidoRepository.save(pedidoProduto);
     }
     
@@ -216,5 +221,40 @@ public class ConsumoService {
     	usuarioRepository.save(pedidoUsuario);
     	
     	return pedidoUsuario;
+    }
+    
+    public Usuario getUsuarioById(Long id) {
+    	return usuarioRepository.findById(id).get();
+    }
+    
+    public Usuario updatePedidoUsuario(Long idPedido, Long idUsuario) {
+    	
+    	Usuario usuario = usuarioRepository.findById(idUsuario).get();
+    	PedidoGetway pedido = pedidoRepository.findById(idPedido).get();
+    	
+    	List<PedidoGetway> listaPedidos = new ArrayList<>();
+    	listaPedidos.addAll(usuario.getPedidos());
+    	listaPedidos.add(pedido);
+    	
+    	usuario.setPedidos(listaPedidos);
+    	
+    	return usuarioRepository.save(usuario);
+    }
+    
+    public Pagamento realizarPagamento(Long idPedido, Pagamento pagamento) {
+    	PedidoGetway pedido = pedidoRepository.findById(idPedido).get();
+    	Pagamento pagamentoPedido = pagamentoRepository.findById(idPedido).get();
+    	
+    	if(pedido.getValorTotal().equals(pagamento.getValorPago())) {
+    		pedido.setStatus("ANDAMENTO");
+    		pagamentoPedido.setStatusPagamento("PAGO");
+    		pagamentoPedido.setValorPago(pagamento.getValorPago());
+    	}else {
+    		pedido.setStatus("CANCELADO");
+    		pagamentoPedido.setStatusPagamento("DEVOLVIDO");
+    		pagamentoPedido.setValorPago(pagamento.getValorPago());
+    	}
+    	
+    	return pagamentoRepository.save(pagamentoPedido);
     }
 }

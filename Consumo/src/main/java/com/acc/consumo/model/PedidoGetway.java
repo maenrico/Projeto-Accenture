@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
@@ -26,6 +27,9 @@ public class PedidoGetway {
 	private String hora;
 	private Double valorTotal;
 	private String status;
+	
+	@OneToOne
+	private Pagamento pagamento;
 	
 	@ManyToMany
     @JoinTable(name = "pedidoProduto",
@@ -90,6 +94,12 @@ public class PedidoGetway {
 	public void setProdutos(List<ProdutoGetway> produtos) {
 		this.produtos = produtos;
 	}
-	
-	
+
+	public Pagamento getPagamento() {
+		return pagamento;
+	}
+
+	public void setPagamento(Pagamento pagamento) {
+		this.pagamento = pagamento;
+	}
 }
